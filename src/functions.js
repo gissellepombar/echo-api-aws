@@ -1,5 +1,6 @@
 import {dbConnect} from "./dbConnect.js";
 import { mongoCredentials } from "../service_account.js";
+import { ObjectId } from "mongodb";
 
 const collectionName = mongoCredentials.COLLECTION;
 
@@ -15,12 +16,14 @@ export async function getAllDoc(req, res) {
 //Get: Get One 
 export async function getOneDeck(req, res) {
     
-    const { docId } = req.params;
+    const { deckId } = req.params;
     const db = dbConnect();
-    const collection = await db.collection(collectionName).find({ docId }).toArray();
-
-    console.table(collection);
-    res.send(collection);
+    const collection = await db.collection(collectionName).findOne({_id: new ObjectId(deckId)})
+    .catch(err => {
+        res.status(500).send(err)
+        return
+    })
+    res.status(201).send(collection);
 }
 
 //Post: Doc
@@ -37,19 +40,12 @@ export async function postDoc(req, res) {
 
 //Delete: Delete Doc by ID
 export async function deleteDeck(req, res) {
-    // const searchParam = { id: Number(req.params.docId) }
-    const { docId } = req.params
+    const { deckId } = req.params
     const db = dbConnect();
-    await db.collection(collectionName).deleteOne( {docId} )
-
-    // const docId = req.params.id; // assumes the ID is passed as a URL parameter
-    // await db.collection(collectionName).deleteOne({ _id: ObjectId(docId) })
+    await db.collection(collectionName).deleteOne({ _id: new ObjectId(deckId) })
         .catch(err => {
             res.status(500).send(err)
             return
         })
         res.status(201).send( {message: 'Doc Deleted'});
 }
-
-
-
