@@ -49,3 +49,15 @@ export async function deleteDeck(req, res) {
         })
         res.status(201).send( {message: 'Doc Deleted'});
 }
+
+  export async function updateRanking(req, res) {
+    const { deckId, cardIndex } = req.params
+    const { ranking } = req.body
+    const db = dbConnect()
+    const collection = db.collection(collectionName);
+    await collection.updateOne(
+      { _id: new ObjectId(deckId) },
+      { $set: { [`formData.rating${cardIndex}`]: ranking } }
+    );
+    res.status(200).send({ message: 'Card ranking updated successfully.' });
+  };

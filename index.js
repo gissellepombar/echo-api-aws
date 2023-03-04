@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 // import 'dotenv/config'
 
-import { getAllDoc, postDoc, deleteDeck, getOneDeck } from "./src/functions.js";
+import { getAllDoc, postDoc, deleteDeck, getOneDeck, updateRanking } from "./src/functions.js";
 
 const app = express();
 app.use(cors());
@@ -26,3 +26,5 @@ app.post("/post", postDoc);
 //DELETE: Delete 
 app.delete("/delete/:deckId", deleteDeck)
 
+//UPDATE: Patch
+app.patch('/deck/:deckId/ranking/:cardIndex', updateRanking)
